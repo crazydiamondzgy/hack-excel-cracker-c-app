@@ -15,11 +15,13 @@ This paper discusses the way Microsoft Excel handles encryption. As far as I kno
 Workbook Encryption
 
 The 1Table structure contains three 16 byte numbers:
+
 		1) A random salt.
 		2) An MD5 hashed nonce, encrypted using RC4 with a key (K). This encrypted hash is stored as a second 16 byte number in 1Table.
 		3) The nonce is encrypted using key (K) and MD5 hashed then stored as a third 16 byte number in 1Table.
 
 The key (K) is calculated in the following way:
+
 		1) The password (expressed in Unicode) is MD5 hashed.
 		2) The first five bytes of the password hash are put into an array with the 1st 16 byte number (the salt) stored in the 1Table structure.
 		3) The salt is repeatedly concatenated with the password and then padded according to the MD5 algorithm.
@@ -50,6 +52,7 @@ Here is the algorithm to create the hash value:
 		4) XOR the constant 0xCE4B
 
 Example: The password is abcdefghij (10 characters) 
+
 		a -> 0x61 << 1 == 0x00C2
 		b -> 0x62 << 2 == 0x0188
 		c -> 0x63 << 3 == 0x0318
@@ -60,6 +63,7 @@ Example: The password is abcdefghij (10 characters)
 		h -> 0x68 << 8 == 0x6800
 		i -> 0x69 << 9 == 0x5201 (unrotated: 0xD200)
 		j -> 0x6A << 10 == 0x2803 (unrotated: 0x1A800)
+
 count: 0x000A 
 constant: 0xCE4B 
 result: 0xFEF1 
